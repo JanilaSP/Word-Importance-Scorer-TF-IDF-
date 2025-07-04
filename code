@@ -1,0 +1,22 @@
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+documents = [
+"The speed of light is constant for all the observers, regardless of their relative motion, a concept central to Einstein's theory of special relativity.",
+
+ "Black holes can evaporate through a process called Hawking radiation, even though they are known for their intense gravity and ability to trap everything, including light."]
+
+vectorizer = TfidfVectorizer() 
+tfidf_matrix = vectorizer.fit_transform(documents)
+feature_names = vectorizer.get_feature_names_out()
+tfidf_values = {}
+
+for doc_index, doc in enumerate(documents):
+    feature_index = tfidf_matrix[doc_index, :].nonzero()[1]
+    tfidf_doc_values = zip(feature_index, [tfidf_matrix[doc_index, x] for x in feature_index])
+    tfidf_values[doc_index] = {feature_names[i]: value for i, value in tfidf_doc_values}
+
+for doc_index, values in tfidf_values.items():
+    print(f"Document {doc_index + 1}:")
+    for word, tfidf_value in values.items():
+        print(f"{word}: {tfidf_value}")
+    print("\n")
